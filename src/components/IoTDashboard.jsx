@@ -16,88 +16,9 @@ const firebaseConfig = {
   measurementId: "G-91RVZQ38EF",
 };
 
-const LoadingSkeleton = () => (
-  <div style={{ 
-    padding: "20px", 
-    fontFamily: "Arial, sans-serif",
-    maxWidth: "1200px",
-    margin: "0 auto"
-  }}>
-    <div style={{ 
-      textAlign: "center",
-      height: "40px",
-      width: "60%",
-      margin: "0 auto 2rem",
-      background: "linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)",
-      backgroundSize: "200% 100%",
-      animation: "shimmer 1.5s infinite",
-      borderRadius: "4px"
-    }} />
-    
-    <div style={{ 
-      display: "flex", 
-      flexDirection: window.innerWidth <= 768 ? "column" : "row",
-      justifyContent: "center", 
-      gap: "20px",
-      alignItems: "center"
-    }}>
-      {[1, 2].map((_, index) => (
-        <div key={index} style={{ 
-          width: "100%",
-          maxWidth: "500px",
-          padding: "20px",
-          boxSizing: "border-box"
-        }}>
-          <div style={{ 
-            height: "30px",
-            width: "40%",
-            margin: "0 auto 20px",
-            background: "linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)",
-            backgroundSize: "200% 100%",
-            animation: "shimmer 1.5s infinite",
-            borderRadius: "4px"
-          }} />
-          <div style={{ 
-            height: window.innerWidth <= 768 ? "150px" : "200px",
-            width: window.innerWidth <= 768 ? "300px" : "400px",
-            margin: "0 auto",
-            background: "linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)",
-            backgroundSize: "200% 100%",
-            animation: "shimmer 1.5s infinite",
-            borderRadius: "50%"
-          }} />
-        </div>
-      ))}
-    </div>
-
-    <div style={{ textAlign: "center", marginTop: "2rem" }}>
-      <div style={{ 
-        height: "30px",
-        width: "30%",
-        margin: "0 auto 20px",
-        background: "linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)",
-        backgroundSize: "200% 100%",
-        animation: "shimmer 1.5s infinite",
-        borderRadius: "4px"
-      }} />
-      <div style={{ 
-        display: "flex", 
-        gap: "10px", 
-        justifyContent: "center",
-        flexWrap: "wrap"
-      }}>
-        {[1, 2].map((_, index) => (
-          <div key={index} style={{
-            height: "40px",
-            width: "120px",
-            background: "linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)",
-            backgroundSize: "200% 100%",
-            animation: "shimmer 1.5s infinite",
-            borderRadius: "5px"
-          }} />
-        ))}
-      </div>
-    </div>
+const Loader = () => (
+  <div className="loader-container">
+    <div className="loader"></div>
   </div>
 );
 
@@ -169,7 +90,7 @@ const IoTDashboard = () => {
   };
 
   if (loading) {
-    return <LoadingSkeleton />;
+    return <Loader />;
   }
 
   return (
