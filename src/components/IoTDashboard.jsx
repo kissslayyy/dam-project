@@ -85,12 +85,12 @@ const IoTDashboard = () => {
             />
           </div>
           <div style={{ flex: 1, maxWidth: "400px" }}>
-            <h2>Water Pressure</h2>
+            <h2>Water Force</h2>
             <ReactSpeedometer
-              maxValue={1000}
+              maxValue={5}
               value={pressure}
               valueFormat=".0f"
-              currentValueText="${value} Pa"
+              currentValueText="${value} nu"
               needleColor="steelblue"
               startColor="#2ecc71"
               endColor="#FF5F6D"
