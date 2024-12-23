@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, set } from "firebase/database";
 import ReactSpeedometer from "react-d3-speedometer";
@@ -27,6 +28,7 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
 const IoTDashboard = () => {
+  const navigate = useNavigate();
   const [waterLevel, setWaterLevel] = useState(0);
   const [pressure, setPressure] = useState(0);
   const [gateStatus, setGateStatus] = useState(false);
@@ -95,15 +97,19 @@ const IoTDashboard = () => {
 
   return (
     <div style={{ 
-      padding: "20px", 
+      padding: "10px", 
       fontFamily: "Arial, sans-serif",
       maxWidth: "1200px",
-      margin: "0 auto"
+      margin: "0 auto",
+      boxSizing: "border-box",
+      width: "100%",
+      overflowX: "hidden"
     }}>
       <h1 style={{ 
         textAlign: "center",
-        fontSize: "calc(1.5rem + 1vw)",
-        marginBottom: "2rem"
+        fontSize: "calc(1.2rem + 1vw)",
+        marginBottom: "1rem",
+        padding: "0 10px"
       }}>IoT Dam Monitoring Dashboard</h1>
 
       <div style={{ marginBottom: "20px" }}>
@@ -111,107 +117,136 @@ const IoTDashboard = () => {
           display: "flex", 
           flexDirection: window.innerWidth <= 768 ? "column" : "row",
           justifyContent: "center", 
-          gap: "20px",
-          alignItems: "center"
+          gap: "10px",
+          alignItems: "center",
+          width: "100%"
         }}>
           <div style={{ 
             width: "100%",
-            maxWidth: "500px",
-            padding: "20px",
+            maxWidth: window.innerWidth <= 768 ? "100%" : "500px",
+            padding: "10px",
             boxSizing: "border-box"
           }}>
-            <h2 style={{ textAlign: "center" }}>Water Level</h2>
-            <ReactSpeedometer
-              maxValue={100}
-              value={waterLevel}
-              valueFormat=".0f"
-              currentValueText="${value} cm"
-              needleColor="steelblue"
-              startColor="#2ecc71"
-              endColor="#FF5F6D"
-              segments={10}
-              height={window.innerWidth <= 768 ? 150 : 200}
-              width={window.innerWidth <= 768 ? 300 : 400}
-            />
+            <h2 style={{ 
+              textAlign: "center", 
+              fontSize: window.innerWidth <= 768 ? "1.2rem" : "1.5rem",
+              marginBottom: "10px"
+            }}>Water Level</h2>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <ReactSpeedometer
+                maxValue={100}
+                value={waterLevel}
+                valueFormat=".0f"
+                currentValueText="${value} cm"
+                needleColor="steelblue"
+                startColor="#2ecc71"
+                endColor="#FF5F6D"
+                segments={10}
+                height={window.innerWidth <= 768 ? 140 : 200}
+                width={window.innerWidth <= 768 ? 220 : 400}
+                paddingHorizontal={15}
+                paddingVertical={15}
+                labelFontSize={window.innerWidth <= 768 ? "8px" : "12px"}
+                valueTextFontSize={window.innerWidth <= 768 ? "10px" : "12px"}
+                maxSegmentLabels={5}
+              />
+            </div>
           </div>
           <div style={{ 
             width: "100%",
-            maxWidth: "500px",
-            padding: "20px",
+            maxWidth: window.innerWidth <= 768 ? "100%" : "500px",
+            padding: "10px",
             boxSizing: "border-box"
           }}>
-            <h2 style={{ textAlign: "center" }}>Water Pressure</h2>
-            <ReactSpeedometer
-              maxValue={5}
-              value={pressure}
-              valueFormat=".1f"
-              currentValueText="${value} N"
-              needleColor="steelblue"
-              startColor="#2ecc71"
-              endColor="#FF5F6D"
-              segments={10}
-              height={window.innerWidth <= 768 ? 150 : 200}
-              width={window.innerWidth <= 768 ? 300 : 400}
-            />
+            <h2 style={{ 
+              textAlign: "center", 
+              fontSize: window.innerWidth <= 768 ? "1.2rem" : "1.5rem",
+              marginBottom: "10px"
+            }}>Water Pressure</h2>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <ReactSpeedometer
+                maxValue={5}
+                value={pressure}
+                valueFormat=".1f"
+                currentValueText="${value} N"
+                needleColor="steelblue"
+                startColor="#2ecc71"
+                endColor="#FF5F6D"
+                segments={10}
+                height={window.innerWidth <= 768 ? 140 : 200}
+                width={window.innerWidth <= 768 ? 220 : 400}
+                paddingHorizontal={15}
+                paddingVertical={15}
+                labelFontSize={window.innerWidth <= 768 ? "8px" : "12px"}
+                valueTextFontSize={window.innerWidth <= 768 ? "10px" : "12px"}
+                maxSegmentLabels={5}
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      <div style={{ textAlign: "center", marginTop: "2rem" }}>
+      <div style={{ 
+        textAlign: "center", 
+        marginTop: "1rem",
+        padding: "0 10px"
+      }}>
         <h2 style={{ 
           marginBottom: "1rem",
-          fontSize: "calc(1.2rem + 0.5vw)"
+          fontSize: window.innerWidth <= 768 ? "1.2rem" : "1.5rem"
         }}>Gate Status: {gateStatus ? "Open" : "Closed"}</h2>
         <div style={{ 
           display: "flex", 
-          gap: "10px", 
-          justifyContent: "center",
-          flexWrap: "wrap"
+          justifyContent: "center"
         }}>
           <button
-            onClick={() => toggleGate(true)}
+            onClick={() => toggleGate(!gateStatus)}
             style={{
-              padding: "10px 20px",
-              fontSize: "1rem",
-              backgroundColor: "#2ecc71",
+              padding: "10px 24px",
+              fontSize: window.innerWidth <= 768 ? "0.9rem" : "1rem",
+              backgroundColor: gateStatus ? "#e74c3c" : "#2ecc71",
               color: "white",
               border: "none",
               borderRadius: "5px",
-              cursor: "pointer"
+              cursor: "pointer",
+              transition: "background-color 0.3s ease",
+              minWidth: "120px"
             }}
           >
-            Open Gate
-          </button>
-          <button
-            onClick={() => toggleGate(false)}
-            style={{
-              padding: "10px 20px",
-              fontSize: "1rem",
-              backgroundColor: "#e74c3c",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer"
-            }}
-          >
-            Close Gate
+            {gateStatus ? "Close Gate" : "Open Gate"}
           </button>
         </div>
       </div>
 
       <div style={{ 
         textAlign: "center", 
-        marginTop: "2rem",
-        padding: "20px"
+        marginTop: "1rem",
+        padding: "10px"
       }}>
         <h3 style={{ 
           marginBottom: "0.5rem",
-          fontSize: "calc(1rem + 0.3vw)"
+          fontSize: window.innerWidth <= 768 ? "1rem" : "1.2rem"
         }}>Real-time Monitoring</h3>
         <p style={{ 
           color: "#666",
-          fontSize: "calc(0.8rem + 0.2vw)"
+          fontSize: window.innerWidth <= 768 ? "0.8rem" : "1rem",
+          marginBottom: "1rem"
         }}>Data updates in real-time from Firebase.</p>
+        <button
+          onClick={() => navigate('/details')}
+          style={{
+            padding: "8px 20px",
+            fontSize: window.innerWidth <= 768 ? "0.9rem" : "1rem",
+            backgroundColor: "#3498db",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            transition: "background-color 0.3s ease"
+          }}
+        >
+          Team Members
+        </button>
       </div>
     </div>
   );
