@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, set } from "firebase/database";
+import ReactSpeedometer from "react-d3-speedometer";
 
 // Firebase Configuration
 const firebaseConfig = {
@@ -67,8 +68,38 @@ const IoTDashboard = () => {
       <h1>IoT Dam Monitoring Dashboard</h1>
 
       <div style={{ marginBottom: "20px" }}>
-        <h2>Water Level: {waterLevel} cm</h2>
-        <h2>Water Pressure: {pressure}</h2>
+        <div style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
+          <div style={{ flex: 1, maxWidth: "400px" }}>
+            <h2>Water Level</h2>
+            <ReactSpeedometer
+              maxValue={100}
+              value={waterLevel}
+              valueFormat=".0f"
+              currentValueText="${value} cm"
+              needleColor="steelblue"
+              startColor="#2ecc71"
+              endColor="#FF5F6D"
+              segments={10}
+              height={200}
+              fluidWidth={true}
+            />
+          </div>
+          <div style={{ flex: 1, maxWidth: "400px" }}>
+            <h2>Water Pressure</h2>
+            <ReactSpeedometer
+              maxValue={1000}
+              value={pressure}
+              valueFormat=".0f"
+              currentValueText="${value} Pa"
+              needleColor="steelblue"
+              startColor="#2ecc71"
+              endColor="#FF5F6D"
+              segments={10}
+              height={200}
+              fluidWidth={true}
+            />
+          </div>
+        </div>
         <h2>Gate Status: {gateStatus ? "Open" : "Closed"}</h2>
         {alert && <h2 style={{ color: "red" }}>Alert: {alert}</h2>}
       </div>
