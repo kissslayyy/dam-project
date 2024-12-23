@@ -4,7 +4,7 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, set } from "firebase/database";
 import ReactSpeedometer from "react-d3-speedometer";
 import "../styles/skeleton.css";
-
+import logo from "../assets/logo.jpeg";
 // Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAlhOeHflNK-xjvldMMY3s89qiii-TVJKM",
@@ -58,7 +58,23 @@ const IoTDashboard = () => {
 
     // Attach listeners to database nodes
     const unsubscribeWaterLevel = onValue(waterLevelRef, (snapshot) => {
-      setWaterLevel(snapshot.val());
+      const level = snapshot.val();
+      setWaterLevel(level);
+      
+      // Calculate water level percentage (assuming MAX_WATER_LEVEL is 300)
+      const waterLevelPercentage = ((300 - level) / 300) * 100;
+      
+      // Automatically update gate status if water level is over 70%
+      if (waterLevelPercentage > 70) {
+        set(gateStatusRef, true); // Open the gate
+        set(alertRef, "High water level detected! Gate opened automatically.");
+      } else {
+        set(alertRef, ""); // Clear alert when water level is under 70%
+        if (waterLevelPercentage <= 65) {
+          set(gateStatusRef, false); // Close the gate
+        }
+      }
+      
       checkAllLoaded();
     });
 
@@ -105,6 +121,21 @@ const IoTDashboard = () => {
       width: "100%",
       overflowX: "hidden"
     }}>
+      <img src={logo} alt="Logo" style={{ 
+        display: "block", 
+        margin: "0 auto",
+        width: "150px",
+        height: "auto",
+        
+      }} />
+       <h1 style={{ 
+        textAlign: "center",
+        fontSize: "calc(1.2rem + 1vw)",
+        marginBottom: "1rem",
+        padding: "0 10px"
+      }}>
+B. P. Mandal College of Engineering Madhepura Project</h1>
+
       <h1 style={{ 
         textAlign: "center",
         fontSize: "calc(1.2rem + 1vw)",
@@ -137,7 +168,7 @@ const IoTDashboard = () => {
                 maxValue={100}
                 value={waterLevel}
                 valueFormat=".0f"
-                currentValueText="${value} cm"
+                currentValueText="${value} %"
                 needleColor="steelblue"
                 startColor="#2ecc71"
                 endColor="#FF5F6D"
@@ -195,10 +226,33 @@ const IoTDashboard = () => {
           marginBottom: "1rem",
           fontSize: window.innerWidth <= 768 ? "1.2rem" : "1.5rem"
         }}>Gate Status: {gateStatus ? "Open" : "Closed"}</h2>
+         
+        {alert && waterLevel >= 70 && (
+          <div style={{
+            backgroundColor: "#f8d7da",
+            color: "#721c24",
+            padding: "10px",
+            borderRadius: "5px",
+            marginBottom: "1rem",
+            fontSize: window.innerWidth <= 768 ? "0.9rem" : "1rem"
+          }}>
+            {alert}
+          </div>
+        )}
         <div style={{ 
           display: "flex", 
-          justifyContent: "center"
+          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "10px"
         }}>
+          {}
+          <p style={{
+            fontSize: window.innerWidth <= 768 ? "0.9rem" : "1rem",
+            color: "#666"
+          }}>
+            Automatic Control: Gate opens at 70% water level
+          </p>
           <button
             onClick={() => toggleGate(!gateStatus)}
             style={{

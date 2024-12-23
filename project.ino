@@ -101,21 +101,40 @@ void loop() {
   waterLevel = measureWaterLevel();
   waterPressure = measureWaterPressure();
 
+  // Calculate water level percentage
+  float waterLevelPercentage = ((float)(MAX_WATER_LEVEL - waterLevel) / MAX_WATER_LEVEL) * 100;
+
+  // Set alert based on water level
+  String alertMessage = "";
+  if (waterLevelPercentage > 70) {
+    alertMessage = "High water level detected! Gate opened automatically.";
+    controlGate(true);  // Open gate automatically
+  } else {
+    alertMessage = "";  // Clear alert when water level is under 70%
+    if (waterLevelPercentage <= 65) {  // Add hysteresis to prevent rapid switching
+      controlGate(false);  // Close gate automatically
+    }
+  }
+
+  // Manual control buttons still work
+  if (digitalRead(MANUAL_OPEN_BUTTON_PIN) == LOW) {
+    controlGate(true);
+  }
+  if (digitalRead(MANUAL_CLOSE_BUTTON_PIN) == LOW) {
+    controlGate(false);
+  }
+
   // Update Firebase
   Firebase.setInt(firebaseData, FIREBASE_PATH_WATER_LEVEL, waterLevel);
   Firebase.setInt(firebaseData, FIREBASE_PATH_PRESSURE, waterPressure);
+  Firebase.setString(firebaseData, FIREBASE_PATH_ALERT, alertMessage);
 
   // Check critical conditions
   if (waterLevel > CRITICAL_WATER_LEVEL || waterPressure > SAFE_PRESSURE_THRESHOLD) {
-    Firebase.setString(firebaseData, FIREBASE_PATH_ALERT, "Critical condition detected!");
+    if (alertMessage == "") {
+      Firebase.setString(firebaseData, FIREBASE_PATH_ALERT, "Critical condition detected!");
+    }
     controlGate(true); // Automatically open gate
-  }
-
-  // Manual control
-  if (digitalRead(MANUAL_OPEN_BUTTON_PIN) == LOW) {
-    controlGate(true);
-  } else if (digitalRead(MANUAL_CLOSE_BUTTON_PIN) == LOW) {
-    controlGate(false);
   }
 
   // Print values for debugging
