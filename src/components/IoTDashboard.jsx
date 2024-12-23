@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, set } from "firebase/database";
 import ReactSpeedometer from "react-d3-speedometer";
+import "../styles/skeleton.css";
 
 // Firebase Configuration
 const firebaseConfig = {
@@ -15,6 +16,91 @@ const firebaseConfig = {
   measurementId: "G-91RVZQ38EF",
 };
 
+const LoadingSkeleton = () => (
+  <div style={{ 
+    padding: "20px", 
+    fontFamily: "Arial, sans-serif",
+    maxWidth: "1200px",
+    margin: "0 auto"
+  }}>
+    <div style={{ 
+      textAlign: "center",
+      height: "40px",
+      width: "60%",
+      margin: "0 auto 2rem",
+      background: "linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)",
+      backgroundSize: "200% 100%",
+      animation: "shimmer 1.5s infinite",
+      borderRadius: "4px"
+    }} />
+    
+    <div style={{ 
+      display: "flex", 
+      flexDirection: window.innerWidth <= 768 ? "column" : "row",
+      justifyContent: "center", 
+      gap: "20px",
+      alignItems: "center"
+    }}>
+      {[1, 2].map((_, index) => (
+        <div key={index} style={{ 
+          width: "100%",
+          maxWidth: "500px",
+          padding: "20px",
+          boxSizing: "border-box"
+        }}>
+          <div style={{ 
+            height: "30px",
+            width: "40%",
+            margin: "0 auto 20px",
+            background: "linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)",
+            backgroundSize: "200% 100%",
+            animation: "shimmer 1.5s infinite",
+            borderRadius: "4px"
+          }} />
+          <div style={{ 
+            height: window.innerWidth <= 768 ? "150px" : "200px",
+            width: window.innerWidth <= 768 ? "300px" : "400px",
+            margin: "0 auto",
+            background: "linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)",
+            backgroundSize: "200% 100%",
+            animation: "shimmer 1.5s infinite",
+            borderRadius: "50%"
+          }} />
+        </div>
+      ))}
+    </div>
+
+    <div style={{ textAlign: "center", marginTop: "2rem" }}>
+      <div style={{ 
+        height: "30px",
+        width: "30%",
+        margin: "0 auto 20px",
+        background: "linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)",
+        backgroundSize: "200% 100%",
+        animation: "shimmer 1.5s infinite",
+        borderRadius: "4px"
+      }} />
+      <div style={{ 
+        display: "flex", 
+        gap: "10px", 
+        justifyContent: "center",
+        flexWrap: "wrap"
+      }}>
+        {[1, 2].map((_, index) => (
+          <div key={index} style={{
+            height: "40px",
+            width: "120px",
+            background: "linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)",
+            backgroundSize: "200% 100%",
+            animation: "shimmer 1.5s infinite",
+            borderRadius: "5px"
+          }} />
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
@@ -23,6 +109,7 @@ const IoTDashboard = () => {
   const [waterLevel, setWaterLevel] = useState(0);
   const [pressure, setPressure] = useState(0);
   const [gateStatus, setGateStatus] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState("");
 
   useEffect(() => {
@@ -32,21 +119,39 @@ const IoTDashboard = () => {
     const gateStatusRef = ref(database, "/dam/gate_status");
     const alertRef = ref(database, "/dam/alert");
 
+    // Set initial loading state
+    setLoading(true);
+
+    // Counter for loaded data
+    let loadedCount = 0;
+    const totalDataPoints = 4;
+
+    const checkAllLoaded = () => {
+      loadedCount++;
+      if (loadedCount === totalDataPoints) {
+        setLoading(false);
+      }
+    };
+
     // Attach listeners to database nodes
     const unsubscribeWaterLevel = onValue(waterLevelRef, (snapshot) => {
       setWaterLevel(snapshot.val());
+      checkAllLoaded();
     });
 
     const unsubscribePressure = onValue(pressureRef, (snapshot) => {
       setPressure(snapshot.val());
+      checkAllLoaded();
     });
 
     const unsubscribeGateStatus = onValue(gateStatusRef, (snapshot) => {
       setGateStatus(snapshot.val());
+      checkAllLoaded();
     });
 
     const unsubscribeAlert = onValue(alertRef, (snapshot) => {
       setAlert(snapshot.val());
+      checkAllLoaded();
     });
 
     // Cleanup listeners on component unmount
@@ -63,14 +168,38 @@ const IoTDashboard = () => {
     set(gateStatusRef, open);
   };
 
+  if (loading) {
+    return <LoadingSkeleton />;
+  }
+
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      <h1>IoT Dam Monitoring Dashboard</h1>
+    <div style={{ 
+      padding: "20px", 
+      fontFamily: "Arial, sans-serif",
+      maxWidth: "1200px",
+      margin: "0 auto"
+    }}>
+      <h1 style={{ 
+        textAlign: "center",
+        fontSize: "calc(1.5rem + 1vw)",
+        marginBottom: "2rem"
+      }}>IoT Dam Monitoring Dashboard</h1>
 
       <div style={{ marginBottom: "20px" }}>
-        <div style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
-          <div style={{ flex: 1, maxWidth: "400px" }}>
-            <h2>Water Level</h2>
+        <div style={{ 
+          display: "flex", 
+          flexDirection: window.innerWidth <= 768 ? "column" : "row",
+          justifyContent: "center", 
+          gap: "20px",
+          alignItems: "center"
+        }}>
+          <div style={{ 
+            width: "100%",
+            maxWidth: "500px",
+            padding: "20px",
+            boxSizing: "border-box"
+          }}>
+            <h2 style={{ textAlign: "center" }}>Water Level</h2>
             <ReactSpeedometer
               maxValue={100}
               value={waterLevel}
@@ -80,12 +209,17 @@ const IoTDashboard = () => {
               startColor="#2ecc71"
               endColor="#FF5F6D"
               segments={10}
-              height={200}
-              fluidWidth={true}
+              height={window.innerWidth <= 768 ? 150 : 200}
+              width={window.innerWidth <= 768 ? 300 : 400}
             />
           </div>
-          <div style={{ flex: 1, maxWidth: "400px" }}>
-            <h2>Water Pressure</h2>
+          <div style={{ 
+            width: "100%",
+            maxWidth: "500px",
+            padding: "20px",
+            boxSizing: "border-box"
+          }}>
+            <h2 style={{ textAlign: "center" }}>Water Pressure</h2>
             <ReactSpeedometer
               maxValue={5}
               value={pressure}
@@ -95,46 +229,68 @@ const IoTDashboard = () => {
               startColor="#2ecc71"
               endColor="#FF5F6D"
               segments={10}
-              height={200}
-              fluidWidth={true}
+              height={window.innerWidth <= 768 ? 150 : 200}
+              width={window.innerWidth <= 768 ? 300 : 400}
             />
           </div>
         </div>
-        <h2>Gate Status: {gateStatus ? "Open" : "Closed"}</h2>
-        {alert && <h2 style={{ color: "red" }}>Alert: {alert}</h2>}
       </div>
 
-      <div style={{ marginBottom: "20px" }}>
-        <button
-          onClick={() => toggleGate(true)}
-          style={{
-            padding: "10px 20px",
-            marginRight: "10px",
-            background: "green",
-            color: "white",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          Open Gate
-        </button>
-        <button
-          onClick={() => toggleGate(false)}
-          style={{
-            padding: "10px 20px",
-            background: "red",
-            color: "white",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          Close Gate
-        </button>
+      <div style={{ textAlign: "center", marginTop: "2rem" }}>
+        <h2 style={{ 
+          marginBottom: "1rem",
+          fontSize: "calc(1.2rem + 0.5vw)"
+        }}>Gate Status: {gateStatus ? "Open" : "Closed"}</h2>
+        <div style={{ 
+          display: "flex", 
+          gap: "10px", 
+          justifyContent: "center",
+          flexWrap: "wrap"
+        }}>
+          <button
+            onClick={() => toggleGate(true)}
+            style={{
+              padding: "10px 20px",
+              fontSize: "1rem",
+              backgroundColor: "#2ecc71",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer"
+            }}
+          >
+            Open Gate
+          </button>
+          <button
+            onClick={() => toggleGate(false)}
+            style={{
+              padding: "10px 20px",
+              fontSize: "1rem",
+              backgroundColor: "#e74c3c",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer"
+            }}
+          >
+            Close Gate
+          </button>
+        </div>
       </div>
 
-      <div>
-        <h3>Real-time Monitoring</h3>
-        <p>Data updates in real-time from Firebase.</p>
+      <div style={{ 
+        textAlign: "center", 
+        marginTop: "2rem",
+        padding: "20px"
+      }}>
+        <h3 style={{ 
+          marginBottom: "0.5rem",
+          fontSize: "calc(1rem + 0.3vw)"
+        }}>Real-time Monitoring</h3>
+        <p style={{ 
+          color: "#666",
+          fontSize: "calc(0.8rem + 0.2vw)"
+        }}>Data updates in real-time from Firebase.</p>
       </div>
     </div>
   );
