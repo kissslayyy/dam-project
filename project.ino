@@ -104,16 +104,14 @@ void loop() {
   // Calculate water level percentage
   float waterLevelPercentage = ((float)(MAX_WATER_LEVEL - waterLevel) / MAX_WATER_LEVEL) * 100;
 
-  // Set alert based on water level
+  // Set alert and control gate based on water level
   String alertMessage = "";
   if (waterLevelPercentage > 70) {
     alertMessage = "High water level detected! Gate opened automatically.";
     controlGate(true);  // Open gate automatically
   } else {
     alertMessage = "";  // Clear alert when water level is under 70%
-    if (waterLevelPercentage <= 65) {  // Add hysteresis to prevent rapid switching
-      controlGate(false);  // Close gate automatically
-    }
+    controlGate(false);  // Close gate when water level is under 70%
   }
 
   // Manual control buttons still work
@@ -129,21 +127,5 @@ void loop() {
   Firebase.setInt(firebaseData, FIREBASE_PATH_PRESSURE, waterPressure);
   Firebase.setString(firebaseData, FIREBASE_PATH_ALERT, alertMessage);
 
-  // Check critical conditions
-  if (waterLevel > CRITICAL_WATER_LEVEL || waterPressure > SAFE_PRESSURE_THRESHOLD) {
-    if (alertMessage == "") {
-      Firebase.setString(firebaseData, FIREBASE_PATH_ALERT, "Critical condition detected!");
-    }
-    controlGate(true); // Automatically open gate
-  }
-
-  // Print values for debugging
-  Serial.print("Water Level: ");
-  Serial.print(waterLevel);
-  Serial.print(" cm, Pressure: ");
-  Serial.print(waterPressure);
-  Serial.print(", Gate: ");
-  Serial.println(isGateOpen ? "Open" : "Closed");
-
-  delay(1000); // Loop delay
+  delay(1000);  // Small delay between readings
 }

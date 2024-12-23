@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './DamDetails.css';
+import logo from "../assets/logo.jpeg";
 
 const DamDetails = () => {
   const navigate = useNavigate();
@@ -40,7 +41,20 @@ const DamDetails = () => {
       >
         <span className="back-icon">←</span> Go to Home
       </button>
-
+      <img src={logo} alt="Logo" style={{ 
+        display: "block", 
+        margin: "0 auto",
+        width: "150px",
+        height: "auto",
+        
+      }} />
+       <h1 style={{ 
+        textAlign: "center",
+        fontSize: "calc(1.2rem + 1vw)",
+        marginBottom: "1rem",
+        padding: "0 10px"
+      }}>
+B. P. Mandal College of Engineering Madhepura Project</h1>
       <h1 className="title">Team member Details</h1>
 
       <div className="grid-container">

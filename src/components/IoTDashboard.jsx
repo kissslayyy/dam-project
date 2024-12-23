@@ -4,7 +4,6 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, set } from "firebase/database";
 import ReactSpeedometer from "react-d3-speedometer";
 import "../styles/skeleton.css";
-import logo from "../assets/logo.jpeg";
 // Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAlhOeHflNK-xjvldMMY3s89qiii-TVJKM",
@@ -64,15 +63,13 @@ const IoTDashboard = () => {
       // Calculate water level percentage (assuming MAX_WATER_LEVEL is 300)
       const waterLevelPercentage = ((300 - level) / 300) * 100;
       
-      // Automatically update gate status if water level is over 70%
+      // Update gate status and alert based on water level
       if (waterLevelPercentage > 70) {
         set(gateStatusRef, true); // Open the gate
         set(alertRef, "High water level detected! Gate opened automatically.");
       } else {
-        set(alertRef, ""); // Clear alert when water level is under 70%
-        if (waterLevelPercentage <= 65) {
-          set(gateStatusRef, false); // Close the gate
-        }
+        set(gateStatusRef, false); // Close the gate when water level is under 70%
+        set(alertRef, ""); // Clear alert
       }
       
       checkAllLoaded();
@@ -121,20 +118,7 @@ const IoTDashboard = () => {
       width: "100%",
       overflowX: "hidden"
     }}>
-      <img src={logo} alt="Logo" style={{ 
-        display: "block", 
-        margin: "0 auto",
-        width: "150px",
-        height: "auto",
-        
-      }} />
-       <h1 style={{ 
-        textAlign: "center",
-        fontSize: "calc(1.2rem + 1vw)",
-        marginBottom: "1rem",
-        padding: "0 10px"
-      }}>
-B. P. Mandal College of Engineering Madhepura Project</h1>
+     
 
       <h1 style={{ 
         textAlign: "center",
