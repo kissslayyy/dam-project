@@ -6,6 +6,7 @@ import mantesh from "../assets/mantesh.jpeg";
 import ompriya from "../assets/ompriya.jpeg";
 import vivek from "../assets/vivek.jpeg";
 import sumant from "../assets/sumant.jpeg";
+import Hod from "../assets/Hod.jpeg";
 const DamDetails = () => {
   const navigate = useNavigate();
   const details = [
@@ -79,6 +80,24 @@ const DamDetails = () => {
             </div>
           </div>
         ))}
+      </div>
+      <div className="">
+        <h1>Under the guidance of</h1>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <div className="card">
+            <div className="card-header">
+              <img src={Hod} alt="Hod" className="avatar" />
+              <h2 className="name">Prof. Kunal kumar</h2>
+            </div>
+
+            <div className="card-content">
+              <div className="detail-row">
+                <span className="label">HOD:</span>
+                <span className="value"> Civil engineering</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
