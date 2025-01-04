@@ -12,7 +12,7 @@ const DamDetails = () => {
   const details = [
     {
       name: "Sumit kumar",
-      regNo: "2201128907",
+      regNo: "22101128907",
       image: sumit,
     },
     {
