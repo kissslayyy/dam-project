@@ -17,12 +17,12 @@ const DamDetails = () => {
     },
     {
       name: "Om priya",
-      regNo: "21101128027",
+      regNo: "21101128039",
       image: ompriya,
     },
     {
       name: "Mamtesh kumar",
-      regNo: "2110112826",
+      regNo: "21101128002",
       image: mantesh,
     },
     {
@@ -62,6 +62,24 @@ const DamDetails = () => {
       >
         B. P. Mandal College of Engineering Madhepura Project
       </h1>
+      <div className="">
+        <h1>Under the guidance of</h1>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <div className="card">
+            <div className="card-header">
+              <img src={Hod} alt="Hod" className="avatar" />
+              <h2 className="name">Prof. Kunal kumar</h2>
+            </div>
+
+            <div className="card-content">
+              <div className="detail-row">
+                <span className="label">HOD:</span>
+                <span className="value"> Civil engineering</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <h1 className="title">Team member Details</h1>
 
       <div className="grid-container">
@@ -80,24 +98,6 @@ const DamDetails = () => {
             </div>
           </div>
         ))}
-      </div>
-      <div className="">
-        <h1>Under the guidance of</h1>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <div className="card">
-            <div className="card-header">
-              <img src={Hod} alt="Hod" className="avatar" />
-              <h2 className="name">Prof. Kunal kumar</h2>
-            </div>
-
-            <div className="card-content">
-              <div className="detail-row">
-                <span className="label">HOD:</span>
-                <span className="value"> Civil engineering</span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
